@@ -1,0 +1,24 @@
+# Managed by EdgeVision 2.0.4 - Webcam USB / YOLO
+[Unit]
+Description=EdgeVision YOLO-Nano webcam service (Orange Pi 4 Pro)
+After=network.target
+
+[Service]
+Type=simple
+User=orangepi
+Group=orangepi
+SupplementaryGroups=video
+WorkingDirectory=/home/orangepi/edgevision-camera
+Environment=OPENBLAS_NUM_THREADS=1
+Environment=OMP_NUM_THREADS=2
+ExecStartPre=/bin/bash /home/orangepi/edgevision-start204/scripts/esperar_ip.sh
+ExecStart=/bin/bash /home/orangepi/edgevision-camera/start.sh
+Restart=always
+RestartSec=8
+TimeoutStartSec=120
+NoNewPrivileges=true
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

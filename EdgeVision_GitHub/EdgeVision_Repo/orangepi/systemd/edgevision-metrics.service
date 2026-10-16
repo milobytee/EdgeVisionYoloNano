@@ -1,0 +1,21 @@
+# Managed by EdgeVision 2.0.4 - Metricas ligeras
+[Unit]
+Description=EdgeVision worker CPU and RAM monitor (Orange Pi 4 Pro)
+After=network.target
+
+[Service]
+Type=simple
+User=orangepi
+Group=orangepi
+WorkingDirectory=/home/orangepi
+ExecStartPre=/bin/bash /home/orangepi/edgevision-start204/scripts/esperar_ip.sh
+ExecStart=/usr/bin/python3 /home/orangepi/edgevision-worker-metrics.py --bind 192.168.100.20 --port 9100
+Restart=always
+RestartSec=5
+TimeoutStartSec=120
+NoNewPrivileges=true
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

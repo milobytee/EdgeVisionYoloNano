@@ -1,0 +1,23 @@
+# EdgeVision 2.0.5.1 - additional passive RPC observer ONLY
+# Deliberately does not modify edgevision-metrics, edgevision-rpc or camera.
+[Unit]
+Description=EdgeVision passive RPC observation (private LAN, port 9101)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=orangepi
+Group=orangepi
+WorkingDirectory=/home/orangepi
+ExecStartPre=/usr/bin/python3 /home/orangepi/edgevision-rpc-observer-2051.py --bind 192.168.100.20 --wait-ip
+ExecStart=/usr/bin/python3 /home/orangepi/edgevision-rpc-observer-2051.py --bind 192.168.100.20 --port 9101
+Restart=on-failure
+RestartSec=5
+TimeoutStartSec=100
+NoNewPrivileges=true
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

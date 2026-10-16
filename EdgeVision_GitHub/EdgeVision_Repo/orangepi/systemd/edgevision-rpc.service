@@ -1,0 +1,22 @@
+# Managed by EdgeVision 2.0.4 - RPC en red privada
+[Unit]
+Description=EdgeVision RPC worker (Orange Pi 4 Pro)
+After=network.target
+
+[Service]
+Type=simple
+User=orangepi
+Group=orangepi
+WorkingDirectory=/home/orangepi/llama.cpp
+Environment=GGML_RPC_NO_RDMA=1
+ExecStartPre=/bin/bash /home/orangepi/edgevision-start204/scripts/esperar_ip.sh
+ExecStart=/home/orangepi/llama.cpp/build/bin/ggml-rpc-server --host 192.168.100.20 --port 50052 --threads 4
+Restart=always
+RestartSec=5
+TimeoutStartSec=120
+NoNewPrivileges=true
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

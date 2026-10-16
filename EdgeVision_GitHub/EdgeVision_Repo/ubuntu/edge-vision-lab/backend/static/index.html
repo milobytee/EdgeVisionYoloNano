@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EdgeVision | Laboratorio de IA local</title>
+<style>
+:root{color-scheme:dark;--bg:#091421;--panel:#102338;--tile:#132d42;--line:#2b4a60;--text:#eff7fd;--sub:#9fb9ca;--accent:#43c9ac;--gold:#f9d890;--red:#ec8792}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% 0%,#173e51 0%,var(--bg) 52%);color:var(--text);font:14px/1.5 system-ui,-apple-system,Segoe UI,Arial,sans-serif;min-height:100vh}header{max-width:1200px;margin:auto;padding:24px 24px 16px;display:flex;align-items:center;justify-content:space-between;gap:14px}.brand{font-size:25px;font-weight:850;letter-spacing:-.5px}.brand b{color:var(--accent)}.tag{padding:7px 12px;color:#b0f1e0;border:1px solid #345e64;background:#193943;border-radius:18px;font-size:12px}
+main{max-width:1200px;margin:auto;padding:0 24px 42px}.intro{max-width:900px;color:var(--sub);margin:0 0 24px;line-height:1.6}.grid{display:grid;grid-template-columns:minmax(0,1.42fr) minmax(300px,1fr);gap:20px}.panel{border:1px solid var(--line);border-radius:17px;background:var(--panel);padding:24px;box-shadow:0 15px 38px #0004}h2{font-size:17px;line-height:1.3;margin:0 0 16px}h3{font-size:15px;margin:22px 0 12px}.muted{color:var(--sub);font-size:12px}.tabs{display:flex;gap:8px;margin-bottom:22px}.tabs button{flex:1;margin:0;border:1px solid #38546b;background:#13283d;color:#b9d2df;white-space:normal}.tabs button.selected{background:#234e4f;border-color:var(--accent);color:#eafff8}.hidden,[hidden]{display:none!important}button{cursor:pointer;border:0;border-radius:10px;background:var(--accent);font:inherit;font-weight:720;color:#0b272e;padding:12px 16px;width:100%;margin-top:12px}button:hover:not(:disabled){filter:brightness(1.08)}button:disabled{opacity:.5;cursor:wait}button.secondary{background:#203c50;color:#d1f8ea;border:1px solid #346477}.button-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.button-row button{margin-top:8px;padding:11px 7px}.hint{font-size:12px;color:var(--sub);margin:9px 0 16px}
+#drop{min-height:226px;border:2px dashed #44647c;border-radius:14px;background:#0a1b2d;display:grid;place-items:center;align-content:center;text-align:center;gap:8px;padding:15px;cursor:pointer}#drop.drag{border-color:var(--accent);background:#1c4042}#drop img{max-width:100%;max-height:230px;border-radius:11px}textarea{background:#0b1b2b;border:1px solid #37556d;color:var(--text);border-radius:11px;width:100%;padding:13px;resize:vertical;min-height:105px;font:inherit;margin-top:8px}.result{background:#0b1b2b;border:1px solid #345168;padding:14px;border-radius:11px;white-space:pre-wrap;min-height:128px;line-height:1.65;font-size:14px}.mode{font-size:12px;color:var(--gold);display:block;margin-top:8px}
+.camera-box{min-height:290px;background:#06131f;border:1px solid #365269;border-radius:13px;display:grid;place-items:center;overflow:hidden;position:relative}.camera-box img{width:100%;height:auto;max-height:430px;object-fit:contain}.camera-empty{text-align:center;color:var(--sub);max-width:300px;padding:40px 15px}.camera-empty strong{display:block;color:#eff7fd;font-size:16px;margin-bottom:8px}.live-badge{position:absolute;top:13px;left:12px;font-size:11px;background:#c93e58;color:#fff;padding:4px 8px;border-radius:5px;letter-spacing:.6px;z-index:2}.live-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px 0}.live-grid>div{border:1px solid #334d64;background:#122d40;padding:10px;border-radius:9px}.live-grid span{display:block;font-size:11px;color:var(--sub)}.live-grid strong{font-size:17px;font-weight:700}.detect-list{min-height:30px;color:#c4e6dc;padding:8px 0 0;font-size:13px}.camera-status{border-radius:9px;background:#112d3f;border:1px solid #305268;padding:10px 12px;color:#c6dce8;min-height:42px;margin:12px 0}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid #2c4458;padding:10px 0}.row:last-child{border:0}.host{font-size:13px;font-weight:670}.data{font-size:12px;color:var(--sub)}.light{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;background:#7891a3}.light.ok{background:var(--accent);box-shadow:0 0 10px #43c9ac6b}.light.bad{background:var(--red)}.light.warn{background:var(--gold)}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:12px}.tile{padding:13px;background:var(--tile);border:1px solid #33546b;border-radius:11px}.tile b{display:block;font-size:24px;margin:3px 0}.tile small{color:var(--sub)}.bar{height:7px;background:#2a4256;border-radius:10px;overflow:hidden;margin:7px 0}.bar span{display:block;width:0;height:100%;background:var(--accent)}.note{font-size:12px;line-height:1.55;color:var(--sub);margin-top:15px}footer{color:#819caf;max-width:1200px;margin:0 auto;padding:0 24px 30px;font-size:12px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}.panel{padding:18px}.tag{font-size:10px}.live-grid{grid-template-columns:1fr 1fr 1fr}header{align-items:flex-start}}@media(max-width:430px){.live-grid strong{font-size:14px}.tabs button{font-size:12px}}
+</style>
+</head>
+<body>
+<header><div class="brand">EDGE<b>VISION</b> <span style="font-size:11px;color:var(--sub)">2.0.5</span></div><span class="tag">100 % procesamiento local · ARM64 + x86-64</span></header>
+<main>
+<p class="intro">Dos modalidades de visión: <strong>interpretación multimodal Qwen3-VL</strong> y <strong>detección YOLO-Nano desde una cámara USB conectada físicamente a Orange Pi</strong>. Sin API de IA externa. La CPU de Ubuntu actúa como coordinadora y la Orange Pi ofrece inferencia RPC y detección por cámara.</p>
+<div class="grid">
+<section class="panel">
+  <div class="tabs" role="tablist" aria-label="Modalidad de visión">
+    <button id="tab-vlm" class="selected" role="tab" aria-selected="true" type="button">Imagen · Qwen3-VL</button>
+    <button id="tab-camera" role="tab" aria-selected="false" type="button">Cámara en vivo · YOLO-Nano</button>
+  </div>
+  <section id="vlm-pane" role="tabpanel" aria-label="Interpretación de imágenes">
+    <h2>Analizar fotografía</h2>
+    <label id="drop" for="image"><strong>Arrastra una imagen aquí</strong><span class="muted">o haz clic para seleccionar JPG / PNG / WebP · máximo 5 MB</span></label>
+    <input id="image" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+    <label for="question" class="muted" style="display:block;margin-top:16px">Instrucción para el modelo multimodal</label>
+    <textarea id="question">Describe detalladamente qué aparece en esta imagen, sus objetos principales y cualquier texto visible. Responde en español, sin inventar información.</textarea>
+    <button id="send" type="button">Analizar imagen localmente</button>
+    <p id="msg" class="hint" role="status"></p>
+    <button id="retry-local" class="secondary" type="button" hidden>Reintentar esta imagen usando solo Ubuntu</button>
+    <h3>Resultado de la inferencia</h3>
+    <div class="result" id="result" aria-live="polite">La respuesta del modelo aparecerá aquí.</div>
+    <span id="mode" class="mode"></span>
+  </section>
+  <section id="camera-pane" role="tabpanel" aria-label="Detección de objetos por cámara" hidden>
+    <h2>Detección de objetos · YOLO11-Nano</h2>
+    <p class="hint">La webcam USB está conectada a la Orange Pi (no a Windows). El video se procesa con ONNX Runtime sobre CPU ARM64; el portal muestra recuadros, clases y confianza.</p>
+    <div class="camera-box">
+      <span id="live-badge" class="live-badge" hidden>EN VIVO · ARM64</span>
+      <div id="camera-empty" class="camera-empty"><strong>Esperando transmisión</strong>Selecciona «Ver cámara» para iniciar la vista en vivo.</div>
+      <img id="camera-image" alt="Fotogramas YOLO con recuadros de detección" hidden>
+    </div>
+    <div class="live-grid">
+      <div><span>Detección FPS</span><strong id="cam-fps">--</strong></div>
+      <div><span>Objetos</span><strong id="cam-count">--</strong></div>
+      <div><span>Inferencia</span><strong id="cam-infer">-- ms</strong></div>
+    </div>
+    <div id="cam-detect" class="detect-list">Conecta la webcam USB y activa el servicio en Orange Pi.</div>
+    <div id="camera-message" class="camera-status" role="status">Comprobando servicio YOLO...</div>
+    <div class="button-row"><button class="secondary" id="cam-start" type="button">Ver cámara</button><button class="secondary" id="cam-stop" type="button">Detener vista</button></div>
+    <div class="button-row"><button class="secondary" id="cam-capture" type="button">Capturar fotograma</button><button id="cam-analyze" type="button">Capturar y analizar con Qwen3-VL</button></div>
+    <p class="note">La captura para Qwen3-VL es el fotograma <strong>original sin recuadros</strong>. El análisis pasa al panel «Imagen» y puede tardar varios minutos. Al analizar, YOLO se pausa temporalmente para liberar CPU ARM64.</p>
+  </section>
+</section>
+<aside class="panel">
+  <h2>Estado del clúster</h2>
+  <div class="row"><div><div class="host"><span class="light" id="rpc-dot"></span>Orange Pi 4 Pro</div><div class="data">192.168.100.20 · RPC:50052</div></div><strong id="rpc-state" class="data">Verificando...</strong></div>
+  <div class="row"><div><div class="host"><span class="light" id="model-dot"></span>Qwen3-VL multimodal</div><div class="data">VM Ubuntu · servicio interno 8081</div></div><strong id="model-state" class="data">Verificando...</strong></div>
+  <div class="row"><div><div class="host"><span class="light" id="camera-dot"></span>Webcam USB / YOLO-Nano</div><div class="data">Orange Pi · 192.168.100.20:9200</div></div><strong id="camera-state" class="data">Verificando...</strong></div>
+  <div class="row"><div><div class="host">Ruta de inferencia VLM</div><div id="engine-error" class="data">Iniciando...</div></div><strong id="engine-mode" class="data">---</strong></div>
+  <div class="row"><div class="host">Recuperaciones del VLM</div><strong id="failovers" class="data">0</strong></div>
+  <div class="button-row"><button id="to-rpc" class="secondary" type="button">Reactivar RPC</button><button id="to-local" class="secondary" type="button">Usar solo VM</button></div>
+  <div id="switch-msg" class="muted" style="padding-top:10px;min-height:18px"></div>
+  <h3>Monitoreo de CPU y RAM</h3>
+  <div class="metrics">
+    <div class="tile"><small>CPU Ubuntu VM</small><b id="vm-cpu">--%</b><div class="bar"><span id="vm-bar"></span></div><small id="vm-mem">Memoria --%</small></div>
+    <div class="tile"><small>CPU Orange Pi</small><b id="pi-cpu">--%</b><div class="bar"><span id="pi-bar"></span></div><small id="pi-mem">Memoria --%</small></div>
+  </div>
+  <p class="note">El respaldo VLM funciona en frío: si RPC falla, Qwen3-VL puede recargarse en Ubuntu y la petición se reinicia. No garantiza continuidad instantánea. Las métricas de CPU por sí solas no demuestran distribución: conserva los registros de asignación RPC.</p>
+  <p class="note">El portal, RPC y la webcam no tienen autenticación. Deben estar accesibles <strong>solo dentro del laboratorio</strong>; nunca abras puertos 50052, 9200 ni 8000 hacia Internet.</p>
+</aside>
+</div>
+</main><footer>EdgeVision · Proyecto académico de Arquitectura de Computadoras · Datos de cámara procesados localmente</footer>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+let selection=null,working=false,activeTab='vlm',streaming=false,lastMode='';
+function showTab(tab){
+  activeTab=tab;
+  $('vlm-pane').hidden=tab!=='vlm';$('camera-pane').hidden=tab!=='camera';
+  $('tab-vlm').classList.toggle('selected',tab==='vlm');$('tab-camera').classList.toggle('selected',tab==='camera');
+  $('tab-vlm').setAttribute('aria-selected',String(tab==='vlm'));$('tab-camera').setAttribute('aria-selected',String(tab==='camera'));
+  if(tab!=='camera')stopStream();
+}
+$('tab-vlm').addEventListener('click',()=>showTab('vlm'));
+$('tab-camera').addEventListener('click',()=>showTab('camera'));
+function chosen(file){
+  if(!file)return false;
+  if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>5*1024*1024){$('msg').textContent='Selecciona JPG, PNG o WebP de máximo 5 MB.';return false;}
+  selection=file;const reader=new FileReader();
+  reader.onload=()=>{
+    $('drop').replaceChildren();const im=document.createElement('img');im.src=reader.result;im.alt='Imagen seleccionada';$('drop').appendChild(im);
+    const cap=document.createElement('div');cap.className='muted';cap.textContent=file.name;$('drop').appendChild(cap);
+  };reader.readAsDataURL(file);return true;
+}
+$('image').addEventListener('change',e=>chosen(e.target.files[0]));
+const drop=$('drop');drop.addEventListener('dragover',e=>{e.preventDefault();drop.classList.add('drag')});
+drop.addEventListener('dragleave',()=>drop.classList.remove('drag'));
+drop.addEventListener('drop',e=>{e.preventDefault();drop.classList.remove('drag');chosen(e.dataTransfer.files[0])});
+function state(key,ok){$(key+'-dot').className='light '+(ok===null?'warn':ok?'ok':'bad');$(key+'-state').textContent=ok===null?'Sin confirmar':ok?'Disponible':'No disponible';}
+function metric(prefix,obj){if(!obj){$(prefix+'-cpu').textContent='--%';$(prefix+'-bar').style.width='0%';$(prefix+'-mem').textContent='Sin monitor';return;}
+  const cpu=Number(obj.cpu_percent||0);$(prefix+'-cpu').textContent=cpu.toFixed(1)+'%';$(prefix+'-bar').style.width=Math.min(100,cpu)+'%';$(''+prefix+'-mem').textContent='RAM '+Number(obj.memory_percent||0).toFixed(1)+'%';}
+function updateCamera(camera){
+  state('camera',!!(camera&&camera.online));
+  $('cam-fps').textContent=camera&&camera.online?Number(camera.fps||0).toFixed(2):'--';
+  $('cam-infer').textContent=camera&&camera.online?Number(camera.inference_ms||0).toFixed(0)+' ms':'-- ms';
+  const detections=camera&&Array.isArray(camera.detections)?camera.detections:[];
+  $('cam-count').textContent=camera&&camera.online?String(detections.length):'--';
+  $('cam-detect').textContent=detections.length?detections.map(d=>`${d.label} (${(d.confidence*100).toFixed(0)}%)`).join(' · '):'Sin objetos detectados en el último fotograma.';
+  if(camera&&camera.paused){$('camera-message').textContent='YOLO pausado mientras se analiza una imagen con Qwen3-VL.';return;}
+  if(camera&&camera.online){$('camera-message').textContent='Cámara USB conectada en '+camera.camera_device+' · YOLO11-Nano activo en Orange Pi.';return;}
+  $('camera-message').textContent=(camera&&camera.last_error)||'Servicio de cámara no accesible. Revisa la webcam en Orange Pi.';
+}
+let polling=false;
+function modeLabel(mode){return mode==='rpc'?'RPC + VM':mode==='local'?'Solo VM':String(mode||'desconocido').replaceAll('-',' ');}
+async function poll(){
+  if(polling)return;polling=true;
+  try{
+    const r=await fetch('/api/status',{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);
+    const s=await r.json();const engine=s.engine||{};lastMode=engine.mode||'stopped';
+    const transitioning=lastMode.startsWith('starting-');
+    state('rpc',s.worker_rpc===true?true:s.worker_rpc===false?false:null);
+    state('model',transitioning?null:!!s.model_ready);
+    if(transitioning)$('model-state').textContent='Cargando...';
+    metric('vm',s.vm);metric('pi',s.worker);updateCamera(s.camera);
+    $('failovers').textContent=engine.failovers;
+    $('engine-mode').textContent=modeLabel(lastMode);
+    $('engine-error').textContent=engine.last_error||engine.monitor_warning||engine.last_switch_reason||'Qwen3-VL-2B - Q4';
+    // Always replace the old response from /api/use-rpc with current backend state.
+    $('switch-msg').textContent='Modo actual: '+modeLabel(lastMode)+(engine.session_id?' - sesion '+engine.session_id:'');
+    const busy=working||transitioning||!!s.analysis_or_switch_in_progress;
+    $('to-rpc').disabled=busy||s.worker_rpc!==true||lastMode==='rpc';
+    $('to-local').disabled=busy||lastMode==='local';
+    $('send').disabled=busy;
+  }catch(e){
+    state('rpc',null);state('model',null);state('camera',null);
+    $('engine-error').textContent='API no disponible: '+e.message;
+    $('switch-msg').textContent='Modo actual sin confirmar; no se reutiliza el ultimo modo solicitado.';
+  }finally{polling=false;}
+}
+
+function startStream(){if(streaming)return;streaming=true;
+  $('camera-empty').hidden=true;$('camera-image').hidden=false;$('live-badge').hidden=false;
+  $('camera-image').src='/api/camera/stream?x='+Date.now();}
+function stopStream(){if(!streaming)return;streaming=false;$('camera-image').removeAttribute('src');$('camera-image').hidden=true;$('live-badge').hidden=true;
+  $('camera-empty').hidden=false;}
+$('camera-image').addEventListener('error',()=>{$('camera-message').textContent='No se pudo abrir transmisión. Confirma webcam y servicio YOLO en Orange Pi.';stopStream();});
+$('cam-start').addEventListener('click',startStream);$('cam-stop').addEventListener('click',stopStream);
+async function captureFrame(){
+  const r=await fetch('/api/camera/snapshot',{cache:'no-store'});
+  if(!r.ok){const d=await r.json().catch(()=>({}));throw Error(d.detail||'No hay fotograma disponible.');}
+  const blob=await r.blob();if(blob.type!=='image/jpeg')throw Error('La cámara devolvió datos inesperados.');
+  const photo=new File([blob],'captura-orange-pi-'+Date.now()+'.jpg',{type:'image/jpeg'});
+  if(!chosen(photo))throw Error('La captura excede el tamaño permitido.');
+  showTab('vlm');$('msg').textContent='Fotograma capturado desde la Orange Pi. Puedes analizarlo ahora.';
+  return photo;
+}
+$('cam-capture').addEventListener('click',async()=>{if(working)return;try{await captureFrame()}catch(e){$('camera-message').textContent='Error al capturar: '+e.message;}});
+$('cam-analyze').addEventListener('click',async()=>{if(working)return;try{await captureFrame();await analyzeSelected()}catch(e){$('camera-message').textContent='Error: '+e.message;}});
+async function cameraPause(pause){try{await fetch('/api/camera/'+(pause?'pause':'resume'),{method:'POST'});}catch(e){/* Optimización opcional; la inferencia principal no depende de la webcam. */}}
+async function analyzeSelected(){
+  if(working)return;if(!selection){$('msg').textContent='Selecciona o captura una imagen primero.';return;}
+  working=true;const button=$('send');button.disabled=true;button.textContent='Analizando...';
+  $('retry-local').hidden=true;
+  $('msg').textContent='Qwen3-VL está interpretando la imagen. Si el modelo estaba detenido, Ubuntu puede tardar varios minutos en cargarlo.';
+  await cameraPause(true);
+  const form=new FormData();form.append('image',selection);form.append('question',$('question').value);
+  try{const r=await fetch('/api/analyze',{method:'POST',body:form});const data=await r.json();
+    if(!r.ok)throw Error(typeof data.detail==='string'?data.detail:JSON.stringify(data.detail));
+    $('result').textContent=data.answer;
+    $('mode').textContent=(data.mode==='rpc-primary'?'RPC + VM':'Respaldo CPU local')+' · '+data.latency_seconds+' s · Foto '+data.image_hash;
+    $('msg').textContent=(data.failover_retried||data.startup_recovered)?'Inferencia completada con recuperacion en CPU local.':'Análisis completado. Guarda una captura para la evidencia.';
+  }catch(e){
+    $('msg').textContent='No se pudo completar el análisis: '+e.message+' La imagen capturada permanece seleccionada.';
+    $('retry-local').hidden=false;
+  }finally{await cameraPause(false);working=false;button.disabled=false;button.textContent='Analizar imagen localmente';poll();}
+}
+$('send').addEventListener('click',analyzeSelected);
+$('retry-local').addEventListener('click',async()=>{
+  if(working||!selection)return;
+  const retry=$('retry-local');retry.disabled=true;
+  $('msg').textContent='Reiniciando solamente Qwen3-VL en CPU de Ubuntu. YOLO y RPC no se modifican; puede tardar unos minutos.';
+  try{
+    const response=await fetch('/api/use-local',{method:'POST'});
+    const details=await response.json().catch(()=>({}));
+    if(!response.ok)throw Error(details.detail||'No se pudo iniciar Qwen3-VL local.');
+    await analyzeSelected();
+  }catch(error){
+    $('msg').textContent='No se pudo recuperar Qwen3-VL: '+error.message+' Consulta el diagnostico del paquete.';
+    retry.hidden=false;
+  }finally{retry.disabled=false;}
+});
+async function changeMode(which){const label=which==='rpc'?'RPC distribuido':'CPU local';
+  if(!confirm('Cambiar a '+label+'? Se recargará el modelo, puede tardar minutos.'))return;
+  working=true;$('switch-msg').textContent='Cargando '+label+'...';$('to-rpc').disabled=true;$('to-local').disabled=true;
+  try{const r=await fetch('/api/use-'+which,{method:'POST'});const d=await r.json();if(!r.ok)throw Error(d.detail||'Fallo');$('switch-msg').textContent='Cambio completado; consultando el estado actual...';}
+  catch(e){$('switch-msg').textContent='Error: '+e.message;}finally{working=false;poll();}}
+$('to-rpc').addEventListener('click',()=>changeMode('rpc'));
+$('to-local').addEventListener('click',()=>changeMode('local'));
+poll();setInterval(poll,3500);
+</script>
+</body></html>

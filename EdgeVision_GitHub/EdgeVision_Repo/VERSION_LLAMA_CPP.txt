@@ -1,0 +1,2 @@
+Ubuntu llama.cpp git commit: df18bee11e96557b07aa7b12db0976f3c7ac9165
+Ubuntu llama.cpp git remote: https://github.com/ggml-org/llama.cpp.git

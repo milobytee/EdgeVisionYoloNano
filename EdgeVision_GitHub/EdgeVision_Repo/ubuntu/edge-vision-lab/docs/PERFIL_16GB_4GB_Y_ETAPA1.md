@@ -1,0 +1,1 @@
+> **NOTA:** Esta guía de Etapa 1 describe la instalación inicial que ya se completó. No la repitas. Para las tareas pendientes y la demostración usa `README.md`, `LEEME_PRIMERO.md` (en la raíz del ZIP) y `docs/PRUEBAS_FINALES_Y_DEFENSA.md`.
